@@ -1,0 +1,7 @@
+node_modules
+dist/*
+dist-esm/*
+example/*/dist
+website/static/playground-dist
+yarn-error.log
+coverage/*

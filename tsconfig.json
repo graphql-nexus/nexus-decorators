@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "moduleResolution": "Node",
+    "experimentalDecorators": true,
+    "inlineSourceMap": true,
+    "lib": ["es2016"],
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true,
+    "noUnusedLocals": true,
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "importsNotUsedAsValues": "error"
+  },
+  "exclude": ["./example", "./dist", "./dist-esm"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "nexus-decorators-example",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "node -r esbuild-register src/exampleApp.ts",
+    "postinstall": "rm -rf node_modules/graphql"
+  },
+  "dependencies": {
+    "fastify": "^3.17.0",
+    "mercurius": "^7.7.0",
+    "esbuild-register": "^2.5.0",
+    "esbuild": "^0.12.8"
+  }
+}
