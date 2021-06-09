@@ -25,6 +25,8 @@ Provide a syntax to use the core of Nexus in decorator format, to de-duplicate d
 
 ### Example:
 
+See the live [example](https://github.com/graphql-nexus/nexus-decorators/tree/main/example)
+
 ```ts
 import { nxs } from "nexus-decorators";
 
@@ -35,7 +37,7 @@ class App {
   constructor() {}
 
   @nxs.field.list.type(() => User)
-  users() {}
+  static users() {}
 }
 
 interface UserShape {
