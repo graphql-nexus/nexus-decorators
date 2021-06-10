@@ -4,14 +4,14 @@
 
 """Implements the Node id"""
 interface Node {
-  id: ID
+  id: ID!
 }
 
 """A user can have posts"""
 type Post implements Node {
   author: User
   contents: String
-  id: ID
+  id: ID!
   title: String
 }
 
@@ -33,7 +33,7 @@ type User implements Node {
   email: String
   firstName: String
   fullName: String
-  id: ID
+  id: ID!
   lastName: String
 
   """A list of posts for a user"""

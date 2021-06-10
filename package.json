@@ -25,7 +25,8 @@
     "prebuild": "yarn clean",
     "prepublish": "yarn clean && yarn build",
     "build": "tsc && tsc --build tsconfig.cjs.json && tsc --build tsconfig.esm.json",
-    "watch": "tsc --build tsconfig.cjs.json --watch"
+    "watch": "tsc --build tsconfig.cjs.json --watch",
+    "dev": "cd example && yarn start"
   },
   "license": "MIT",
   "dependencies": {

@@ -1,5 +1,6 @@
 import { nxs, NxsResult } from "../../..";
 import { usersList } from "../data/data";
+import { proxyCall } from "../data/proxyCall";
 import { Node } from "./Node";
 import { User } from "./User";
 
@@ -12,29 +13,24 @@ export interface PostRecord {
 
 @nxs.objectType({
   description: "A user can have posts",
+  definition(t) {
+    t.string("title");
+    t.string("contents");
+  },
 })
 export class Post extends Node {
-  constructor(private record: PostRecord) {
+  constructor(readonly config: PostRecord) {
     super();
+    return proxyCall(this);
   }
 
   protected get _id() {
-    return this.record.id;
-  }
-
-  @nxs.field.string()
-  title() {
-    return this.record.title;
-  }
-
-  @nxs.field.string()
-  contents() {
-    return this.record.contents;
+    return this.config.id;
   }
 
   @nxs.field.type(() => User)
   author(): NxsResult<"Post", "author"> {
-    const user = usersList.find((u) => u.id === this.record.authorId);
+    const user = usersList.find((u) => u.id === this.config.authorId);
     return user ? new User(user) : null;
   }
 }

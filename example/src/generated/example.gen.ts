@@ -64,7 +64,7 @@ export interface NexusGenFieldTypes {
   Post: { // field return type
     author: NexusGenRootTypes['User'] | null; // User
     contents: string | null; // String
-    id: string | null; // ID
+    id: string; // ID!
     title: string | null; // String
   }
   Query: { // field return type
@@ -77,12 +77,12 @@ export interface NexusGenFieldTypes {
     email: string | null; // String
     firstName: string | null; // String
     fullName: string | null; // String
-    id: string | null; // ID
+    id: string; // ID!
     lastName: string | null; // String
     posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
   }
   Node: { // field return type
-    id: string | null; // ID
+    id: string; // ID!
   }
 }
 

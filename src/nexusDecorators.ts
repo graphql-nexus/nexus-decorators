@@ -344,6 +344,9 @@ export function buildSchemaWithDecorators(
         ...config,
         definition(t: any) {
           const fields = fieldLookup.get(_class) ?? [];
+          if (typeof config.definition === "function") {
+            config.definition(t);
+          }
           if (fields.length > 0) {
             for (const field of fields) {
               const {
