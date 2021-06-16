@@ -4,25 +4,12 @@
  */
 
 
-import type { Node } from "./../models/Node"
-import type { Post } from "./../models/Post"
-import type { User } from "./../models/User"
 import type { App } from "./../models/App"
-import type { core, connectionPluginCore } from "nexus"
+import type { Node } from "./../models/Node"
+import type { User } from "./../models/User"
+import type { Post } from "./../models/Post"
 
-declare global {
-  interface NexusGenCustomOutputMethods<TypeName extends string> {
-    /**
-     * Adds a Relay-style connection to the type, with numerous options for configuration
-     *
-     * @see https://nexusjs.org/docs/plugins/connection
-     */
-    connection<FieldName extends string>(
-      fieldName: FieldName,
-      config: connectionPluginCore.ConnectionFieldConfig<TypeName, FieldName>
-    ): void
-  }
-}
+
 
 
 declare global {
@@ -44,6 +31,7 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Comment: {};
   Post: Post;
   Query: App;
   User: User;
@@ -61,15 +49,21 @@ export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  Comment: { // field return type
+    content: string | null; // String
+  }
   Post: { // field return type
+    abc: string | null; // String
     author: NexusGenRootTypes['User'] | null; // User
+    comments: Array<NexusGenRootTypes['Comment'] | null> | null; // [Comment]
     contents: string | null; // String
     id: string; // ID!
+    ok: boolean | null; // Boolean
     title: string | null; // String
   }
   Query: { // field return type
     node: NexusGenRootTypes['Node'] | null; // Node
-    posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    posts: NexusGenRootTypes['Post'][] | null; // [Post!]
     userByEmail: NexusGenRootTypes['User'] | null; // User
     users: Array<NexusGenRootTypes['User'] | null> | null; // [User]
   }
@@ -79,7 +73,7 @@ export interface NexusGenFieldTypes {
     fullName: string | null; // String
     id: string; // ID!
     lastName: string | null; // String
-    posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    posts: Array<NexusGenRootTypes['Post'] | null>; // [Post]!
   }
   Node: { // field return type
     id: string; // ID!
@@ -87,10 +81,16 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  Comment: { // field return type name
+    content: 'String'
+  }
   Post: { // field return type name
+    abc: 'String'
     author: 'User'
+    comments: 'Comment'
     contents: 'String'
     id: 'ID'
+    ok: 'Boolean'
     title: 'String'
   }
   Query: { // field return type name
@@ -189,7 +189,6 @@ declare global {
   interface NexusGenPluginInputTypeConfig<TypeName extends string> {
   }
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {
-    
   }
   interface NexusGenPluginInputFieldConfig<TypeName extends string, FieldName extends string> {
   }

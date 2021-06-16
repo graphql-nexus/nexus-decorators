@@ -1,5 +1,6 @@
 import { nxs, NxsQueryArgs, NxsQueryResult } from "../../..";
 import { posts, usersList } from "../data/data";
+import { Node } from "./Node";
 import { Post } from "./Post";
 import { User } from "./User";
 
@@ -8,7 +9,7 @@ import { User } from "./User";
 })
 export class App {
   @nxs.queryField(() => ({
-    type: "Node",
+    type: Node,
     description: "Generic node lookup",
     args(t) {
       t.nonNull.id("id");
@@ -44,7 +45,7 @@ export class App {
     return usersList.find((u) => u.email === args.email);
   }
 
-  @nxs.field.list.type(() => Post, {
+  @nxs.field.list.nonNull.type(() => Post, {
     description: "A list of posts for the app",
   })
   static posts() {

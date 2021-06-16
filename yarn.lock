@@ -27,10 +27,10 @@ iterall@^1.3.0:
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
 
-nexus@^1.1.0-next.16:
-  version "1.1.0-next.16"
-  resolved "https://registry.yarnpkg.com/nexus/-/nexus-1.1.0-next.16.tgz#644dca99afbdaf604f0c1c625ec6518ca7ca947c"
-  integrity sha512-/doo0F1fThQAB0Jt3QBzBMPCQvF2qiPXEtQx+s7a7j3bqfl0zVaQFgn8G1GmKfJpH6Kabt4YIyEvN9Ues6+Q2g==
+nexus@^1.1.0-next.20:
+  version "1.1.0-next.20"
+  resolved "https://registry.yarnpkg.com/nexus/-/nexus-1.1.0-next.20.tgz#e223a8d63b67f4d64e352d4a4d4c6d0e500eb631"
+  integrity sha512-xJnJXQhas4GVeT49fB7TIFgszPzO/BNJCfVJ/IdAavLZBzW5Frkb0Kjo5NuV7EUUjBmodegCN4HMaWvxezGfsA==
   dependencies:
     iterall "^1.3.0"
     tslib "^2.0.3"

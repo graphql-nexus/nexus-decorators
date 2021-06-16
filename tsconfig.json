@@ -10,7 +10,7 @@
     "rootDir": "src",
     "outDir": "dist",
     "strict": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "importHelpers": true,
     "resolveJsonModule": true,
     "noEmit": true,

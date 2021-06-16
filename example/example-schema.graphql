@@ -2,6 +2,10 @@
 ### Do not make changes to this file directly
 
 
+type Comment {
+  content: String
+}
+
 """Implements the Node id"""
 interface Node {
   id: ID!
@@ -9,17 +13,21 @@ interface Node {
 
 """A user can have posts"""
 type Post implements Node {
+  abc: String
   author: User
+  comments: [Comment]
   contents: String
   id: ID!
+  ok: Boolean
   title: String
 }
 
 type Query {
+  """Generic node lookup"""
   node(id: ID!): Node
 
   """A list of posts for the app"""
-  posts: [Post]
+  posts: [Post!]
 
   """Finds a user by their email"""
   userByEmail(email: String): User
@@ -37,5 +45,5 @@ type User implements Node {
   lastName: String
 
   """A list of posts for a user"""
-  posts: [Post]
+  posts: [Post]!
 }

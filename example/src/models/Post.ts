@@ -33,4 +33,24 @@ export class Post extends Node {
     const user = usersList.find((u) => u.id === this.config.authorId);
     return user ? new User(user) : null;
   }
+
+  @nxs.field.boolean()
+  get ok() {
+    return true;
+  }
+
+  @nxs.field.string()
+  abc() {
+    return "abc";
+  }
+
+  @nxs.field.list.type(() => Comment)
+  comments() {
+    return [];
+  }
+}
+
+class Comment {
+  @nxs.field.string()
+  content() {}
 }
