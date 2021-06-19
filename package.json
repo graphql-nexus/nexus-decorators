@@ -1,6 +1,6 @@
 {
   "name": "nexus-decorators",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist",
   "module": "dist-esm",
   "types": "dist/index.d.ts",
@@ -34,13 +34,13 @@
     "stack-utils": "^2.0.3"
   },
   "devDependencies": {
-    "jest": "^27.0.4",
-    "jest-esbuild": "^0.2.0",
-    "esbuild": "^0.12.9",
     "@types/jest": "^26.0.23",
     "@types/node": "^12",
     "@types/stack-utils": "^2.0.0",
+    "esbuild": "^0.12.9",
     "graphql": "^15.5.0",
+    "jest": "^27.0.4",
+    "jest-esbuild": "^0.2.0",
     "nexus": "^1.1.0-next.20",
     "typescript": "^4.3.2"
   }
