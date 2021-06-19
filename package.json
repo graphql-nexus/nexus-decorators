@@ -23,16 +23,21 @@
   "scripts": {
     "clean": "rm -rf dist && rm -rf dist-esm",
     "prebuild": "yarn clean",
-    "prepublish": "yarn clean && yarn build",
+    "prepublish": "yarn clean && yarn build && yarn test",
     "build": "tsc && tsc --build tsconfig.cjs.json && tsc --build tsconfig.esm.json",
     "watch": "tsc --build tsconfig.cjs.json --watch",
-    "dev": "cd example && yarn start"
+    "dev": "cd example && yarn start",
+    "test": "jest"
   },
   "license": "MIT",
   "dependencies": {
     "stack-utils": "^2.0.3"
   },
   "devDependencies": {
+    "jest": "^27.0.4",
+    "jest-esbuild": "^0.2.0",
+    "esbuild": "^0.12.9",
+    "@types/jest": "^26.0.23",
     "@types/node": "^12",
     "@types/stack-utils": "^2.0.0",
     "graphql": "^15.5.0",

@@ -116,17 +116,17 @@ function makeOutputField(wrapping: Wrapping[]): OutputFieldChain {
     id: (config) => outputField.type("ID", config),
     type: (typeName: TypeNameOrThunk, config = {}) => {
       return function (_class, fnName, descriptor) {
+        // TODO: Validate that its a valid GraphQL Name
         if (typeof fnName !== "string") {
-          return;
+          throw new Error("Cannot decorate a type on a non-string method");
         }
         const isStatic = _class.constructor === Function;
         const ctor = (isStatic ? _class : _class.constructor) as MetaClass;
         const fnBody = descriptor.value ?? descriptor.get;
         if (typeof fnBody !== "function") {
-          console.error(
-            `Expected ${fnName} to be a method / getter on ${ctor.name}.${fnName}, skipping`
+          throw new Error(
+            `Expected ${fnName} to be a method / getter on ${ctor.name}.${fnName}`
           );
-          return;
         }
         const fields = setOrGet(ctor, FIELDS, []);
         fields.push({
@@ -400,7 +400,7 @@ function makeOutputType(
       className: _class.name,
     };
     setOrGet(obj, FIELDS, []);
-    obj[NEXUS_BUILD] ??= nexusDecoratorBuild;
+    setOrGet(obj, NEXUS_BUILD, nexusDecoratorBuild);
 
     let walkingProto = _class;
 

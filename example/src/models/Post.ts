@@ -48,9 +48,23 @@ export class Post extends Node {
   comments() {
     return [];
   }
+
+  @nxs.field.list.type(() => MissingFields)
+  missingFields() {
+    return [];
+  }
 }
 
 class Comment {
   @nxs.field.string()
   content() {}
+}
+
+@nxs.objectType({
+  description: "Object with missing fields",
+})
+export class MissingFields extends Node {
+  get _id() {
+    return 1;
+  }
 }

@@ -6,6 +6,11 @@ type Comment {
   content: String
 }
 
+"""Object with missing fields"""
+type MissingFields implements Node {
+  id: ID!
+}
+
 """Implements the Node id"""
 interface Node {
   id: ID!
@@ -18,6 +23,7 @@ type Post implements Node {
   comments: [Comment]
   contents: String
   id: ID!
+  missingFields: [MissingFields]
   ok: Boolean
   title: String
 }

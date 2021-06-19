@@ -7,7 +7,7 @@
 import type { App } from "./../models/App"
 import type { Node } from "./../models/Node"
 import type { User } from "./../models/User"
-import type { Post } from "./../models/Post"
+import type { Post, MissingFields } from "./../models/Post"
 
 
 
@@ -32,6 +32,7 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   Comment: {};
+  MissingFields: MissingFields;
   Post: Post;
   Query: App;
   User: User;
@@ -52,12 +53,16 @@ export interface NexusGenFieldTypes {
   Comment: { // field return type
     content: string | null; // String
   }
+  MissingFields: { // field return type
+    id: string; // ID!
+  }
   Post: { // field return type
     abc: string | null; // String
     author: NexusGenRootTypes['User'] | null; // User
     comments: Array<NexusGenRootTypes['Comment'] | null> | null; // [Comment]
     contents: string | null; // String
     id: string; // ID!
+    missingFields: Array<NexusGenRootTypes['MissingFields'] | null> | null; // [MissingFields]
     ok: boolean | null; // Boolean
     title: string | null; // String
   }
@@ -84,12 +89,16 @@ export interface NexusGenFieldTypeNames {
   Comment: { // field return type name
     content: 'String'
   }
+  MissingFields: { // field return type name
+    id: 'ID'
+  }
   Post: { // field return type name
     abc: 'String'
     author: 'User'
     comments: 'Comment'
     contents: 'String'
     id: 'ID'
+    missingFields: 'MissingFields'
     ok: 'Boolean'
     title: 'String'
   }
@@ -124,10 +133,11 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  Node: "Post" | "User"
+  Node: "MissingFields" | "Post" | "User"
 }
 
 export interface NexusGenTypeInterfaces {
+  MissingFields: "Node"
   Post: "Node"
   User: "Node"
 }

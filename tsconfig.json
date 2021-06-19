@@ -14,7 +14,8 @@
     "importHelpers": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    "types": ["node", "jest"]
   },
-  "exclude": ["./example", "./dist", "./dist-esm"]
+  "exclude": ["./example", "./dist", "./dist-esm", "./test"]
 }
