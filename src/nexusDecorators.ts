@@ -79,7 +79,8 @@ const stackUtils = new StackUtils({ cwd: "/" });
 
 type OutputTypeFn = "objectType" | "interfaceType";
 
-type Wrapping = "list" | "nonNull";
+type NullWrapping = "nonNull" | "nullable";
+type Wrapping = "list" | NullWrapping;
 
 interface FieldConfig {
   name?: string;
@@ -100,7 +101,8 @@ interface OutputFieldChain {
     config?: FieldConfig
   ): MethodDecorator | PropertyDecorator;
   list: OutputFieldChain;
-  nonNull: OutputFieldChain;
+  nonNull: Omit<OutputFieldChain, NullWrapping>;
+  nullable: Omit<OutputFieldChain, NullWrapping>;
 }
 
 interface RootFieldMeta {
@@ -108,7 +110,7 @@ interface RootFieldMeta {
 }
 
 function makeOutputField(wrapping: Wrapping[]): OutputFieldChain {
-  const outputField: Omit<OutputFieldChain, "list" | "nonNull"> = {
+  const outputField: Omit<OutputFieldChain, Wrapping> = {
     int: (config) => outputField.type("Int", config),
     string: (config) => outputField.type("String", config),
     float: (config) => outputField.type("Float", config),
@@ -149,6 +151,11 @@ function makeOutputField(wrapping: Wrapping[]): OutputFieldChain {
   Object.defineProperty(outputField, "nonNull", {
     get() {
       return makeOutputField(wrapping.concat("nonNull"));
+    },
+  });
+  Object.defineProperty(outputField, "nullable", {
+    get() {
+      return makeOutputField(wrapping.concat("nullable"));
     },
   });
   return outputField as any;
@@ -287,7 +294,8 @@ interface ArgsDefinitionBlock {
   bool(name: string, config?: Nexus.core.ScalarArgConfig<any>): void;
   id(name: string, config?: Nexus.core.ScalarArgConfig<any>): void;
   arg(name: string, config: Nexus.core.NexusArgConfig<any>): void;
-  nonNull: Omit<ArgsDefinitionBlock, "nonNull">;
+  nullable: Omit<ArgsDefinitionBlock, NullWrapping>;
+  nonNull: Omit<ArgsDefinitionBlock, NullWrapping>;
   list: ArgsDefinitionBlock;
 }
 
@@ -333,17 +341,26 @@ function gatherArgs(options: Pick<RootFieldOptions, "args">) {
   return options.args ?? {};
 }
 
-function wrapArg(
-  wrapping: Array<"list" | "nonNull">,
-  arg: Nexus.core.NexusArgDef<any>
-) {
+function wrapArg(wrapping: Wrapping[], arg: Nexus.core.NexusArgDef<any>) {
   let finalArg: any = arg;
   const reversed = [...wrapping].reverse();
   for (const wrapper of reversed) {
-    if (wrapper === "list") {
-      finalArg = Nexus.list(finalArg);
-    } else {
-      finalArg = Nexus.nonNull(finalArg);
+    switch (wrapper) {
+      case "list": {
+        finalArg = Nexus.list(finalArg);
+        break;
+      }
+      case "nonNull": {
+        finalArg = Nexus.nonNull(finalArg);
+        break;
+      }
+      case "nullable": {
+        finalArg = Nexus.nullable(finalArg);
+        break;
+      }
+      default: {
+        throw new Error(`Unexpected wrapping ${wrapper}`);
+      }
     }
   }
   return finalArg;
@@ -351,7 +368,7 @@ function wrapArg(
 
 function makeArgsBlock(
   target: Record<string, any>,
-  wrapping: Array<"list" | "nonNull">
+  wrapping: Wrapping[]
 ): ArgsDefinitionBlock {
   return {
     id(name, opts) {
@@ -377,6 +394,9 @@ function makeArgsBlock(
     },
     get nonNull() {
       return makeArgsBlock(target, wrapping.concat("nonNull"));
+    },
+    get nullable() {
+      return makeArgsBlock(target, wrapping.concat("nullable"));
     },
   };
 }
@@ -455,14 +475,6 @@ function unionType(name: string, members: ReadonlyArray<string>) {
   });
 }
 
-function list(val: any) {
-  return Nexus.list(val);
-}
-
-function nonNull(val: any) {
-  return Nexus.nonNull(val);
-}
-
 export const nxs = {
   objectType,
   interfaceType,
@@ -471,8 +483,9 @@ export const nxs = {
   mutationField,
   unionType,
   enumType,
-  list,
-  nonNull,
+  list: Nexus.list,
+  nonNull: Nexus.nonNull,
+  nullable: Nexus.nullable,
   Nexus,
 };
 
