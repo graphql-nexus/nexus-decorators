@@ -11,7 +11,7 @@ export type NxsQueryArgs<FieldName extends string> = NxsArgs<
 >;
 
 export type NxsMutationArgs<FieldName extends string> = NxsArgs<
-  "Query",
+  "Mutation",
   FieldName
 >;
 
@@ -24,6 +24,6 @@ export type NxsQueryResult<FieldName extends string> = NxsResult<
 >;
 
 export type NxsMutationResult<FieldName extends string> = NxsResult<
-  "Query",
+  "Mutation",
   FieldName
 >;
