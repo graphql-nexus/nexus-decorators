@@ -2,7 +2,7 @@
 
 **WIP / Prototype (do not use in production)**
 
-Experimental support for using Nexus schema construction with decorator syntax. Currently requires TypeScript & `experimentalDecorators: true`.
+Experimental support for using Nexus schema construction with decorator syntax. Currently requires decorators to be enabled, by either TS's `experimentalDecorators: true`, or using Babel's [plugin-proposal-decorators](https://babeljs.io/docs/en/babel-plugin-proposal-decorators)
 
 ### Goals
 
@@ -15,7 +15,7 @@ Provide a syntax to use the core of Nexus in decorator format, to de-duplicate d
 ### Features:
 
 - Interfaces via inheritance
-- Mix & match w/ regular nexus
+- Mix & match w/ regular Nexus definitions
 
 ### Open Questions:
 
