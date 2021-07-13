@@ -62,6 +62,18 @@ class User {
     return ctx.findUserByName();
   }
 
+
+  @nxs.mutationField(() => ({ 
+    type: User,
+    args(t) {
+      t.nonNull.string('name')
+    }
+  }))
+  static async createUser(args, ctx) {
+    return new User(await ctx.db.insertUser(args))
+  }
+
+
   @nxs.field.id()
   get id() {
     return `User:${this.record.id}`;
