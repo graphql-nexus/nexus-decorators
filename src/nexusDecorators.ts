@@ -1,13 +1,5 @@
 import * as Nexus from "nexus";
-import {
-  NexusInterfaceTypeConfig,
-  NexusObjectTypeConfig,
-  ObjectDefinitionBlock,
-  NEXUS_BUILD,
-  NEXUS_TYPE,
-  GetGen,
-  ArgsRecord,
-} from "nexus/dist/core";
+import { core } from "nexus";
 
 import StackUtils from "stack-utils";
 
@@ -55,22 +47,22 @@ interface MetaClass {
   [ROOT_FIELDS]?: RootFieldMeta[];
   [INHERITED_INTERFACES]?: InhertitedInterfacesMeta[];
   [OUTPUT_DEFINITION]?: OutputDefinitionMeta;
-  [NEXUS_BUILD]?: () => any;
+  [core.NEXUS_BUILD]?: () => any;
 }
 
 interface NxsObjectTypeConfig
-  extends Omit<NexusObjectTypeConfig<any>, "definition" | "name"> {
+  extends Omit<core.NexusObjectTypeConfig<any>, "definition" | "name"> {
   name?: string;
-  definition?: (t: ObjectDefinitionBlock<any>) => void;
+  definition?: (t: core.ObjectDefinitionBlock<any>) => void;
 }
 
 interface NxsInterfaceTypeConfig
   extends Omit<
-    NexusInterfaceTypeConfig<any>,
+    core.NexusInterfaceTypeConfig<any>,
     "definition" | "name" | "description"
   > {
   name?: string;
-  definition?: (t: ObjectDefinitionBlock<any>) => void;
+  definition?: (t: core.ObjectDefinitionBlock<any>) => void;
   // TODO: fix in nexus
   description?: string;
 }
@@ -85,10 +77,10 @@ type Wrapping = "list" | NullWrapping;
 interface FieldConfig {
   name?: string;
   description?: string;
-  args?: ((t: ArgsDefinitionBlock) => void) | ArgsRecord;
+  args?: ((t: ArgsDefinitionBlock) => void) | core.ArgsRecord;
 }
 
-type TypeNameOrThunk = GetGen<"allOutputTypes", string> | (() => any);
+type TypeNameOrThunk = core.GetGen<"allOutputTypes", string> | (() => any);
 
 interface OutputFieldChain {
   int(config?: FieldConfig): MethodDecorator | PropertyDecorator;
@@ -139,7 +131,7 @@ function makeOutputField(wrapping: Wrapping[]): OutputFieldChain {
           wrapping,
           fieldConfig: config,
         });
-        setOrGet(ctor, NEXUS_BUILD, nexusDecoratorBuild);
+        setOrGet(ctor, core.NEXUS_BUILD, nexusDecoratorBuild);
       };
     },
   };
@@ -191,6 +183,8 @@ function nexusDecoratorBuild(this: MetaClass) {
   const hasFields = has(this, FIELDS);
 
   if (outputDef || hasFields) {
+    const { fields, interfaces } = gatherRecursiveMeta(this);
+
     if (!outputDef) {
       outputDef = {
         outputType: "objectType",
@@ -202,12 +196,7 @@ function nexusDecoratorBuild(this: MetaClass) {
     const { outputType } = outputDef;
 
     // If there are no known fields, and no "definition" for these fields and nothing inherited
-    if (
-      !get(this, FIELDS)?.length &&
-      !get(this, INHERITED_INTERFACES)?.length &&
-      !outputDef.config.definition
-    ) {
-      const fields = setOrGet(this, FIELDS, []);
+    if (!fields.length && !interfaces.length && !outputDef.config.definition) {
       fields.push({
         fieldType: "Boolean",
         fnName: "todo",
@@ -228,7 +217,7 @@ function nexusDecoratorBuild(this: MetaClass) {
       };
     }
 
-    Object.defineProperty(this, NEXUS_TYPE, {
+    Object.defineProperty(this, core.NEXUS_TYPE, {
       value: Nexus[outputDef.outputType]({
         name: outputDef.className,
         ...toSpread,
@@ -236,10 +225,10 @@ function nexusDecoratorBuild(this: MetaClass) {
           if (typeof toSpread.definition === "function") {
             toSpread.definition(t as any);
           }
-          for (const impl of this[INHERITED_INTERFACES] ?? []) {
+          for (const impl of interfaces) {
             t.implements(impl.name);
           }
-          for (const field of this[FIELDS] ?? []) {
+          for (const field of fields) {
             const name = field.fieldConfig.name ?? field.fnName;
             const fieldType =
               typeof field.fieldType === "function"
@@ -262,10 +251,10 @@ function nexusDecoratorBuild(this: MetaClass) {
         },
       }),
     });
-  }
 
-  for (const impl of get(this, INHERITED_INTERFACES) ?? []) {
-    toReturn.push(impl._class);
+    for (const impl of interfaces) {
+      toReturn.push(impl._class);
+    }
   }
 
   for (const rootField of get(this, ROOT_FIELDS) ?? []) {
@@ -285,6 +274,28 @@ function nexusDecoratorBuild(this: MetaClass) {
   }
 
   return toReturn;
+}
+
+function gatherRecursiveMeta<O extends MetaClass>(cls: O) {
+  let fields: FieldsMeta[] = [];
+  let interfaces: InhertitedInterfacesMeta[] = [];
+
+  let walkingProto: any = cls;
+  while (walkingProto && walkingProto !== Function.prototype) {
+    const currentFields = get(walkingProto, FIELDS);
+    const currentInterfaces = get(walkingProto, INHERITED_INTERFACES);
+    if (Array.isArray(currentFields)) {
+      fields = fields.concat(currentFields);
+    }
+    if (Array.isArray(currentInterfaces)) {
+      interfaces = currentInterfaces.concat(currentInterfaces);
+    }
+    walkingProto = Object.getPrototypeOf(walkingProto);
+  }
+  return {
+    fields,
+    interfaces,
+  };
 }
 
 interface ArgsDefinitionBlock {
@@ -325,7 +336,7 @@ const rootField =
         fnBody,
         options,
       });
-      setOrGet(obj, NEXUS_BUILD, nexusDecoratorBuild);
+      setOrGet(obj, core.NEXUS_BUILD, nexusDecoratorBuild);
     };
   };
 
@@ -420,7 +431,7 @@ function makeOutputType(
       className: _class.name,
     };
     setOrGet(obj, FIELDS, []);
-    setOrGet(obj, NEXUS_BUILD, nexusDecoratorBuild);
+    setOrGet(obj, core.NEXUS_BUILD, nexusDecoratorBuild);
 
     let walkingProto = _class;
 

@@ -1,4 +1,4 @@
-import { printSchema } from "graphql";
+import { lexicographicSortSchema, printSchema } from "graphql";
 import { core } from "nexus";
 import path from "path";
 
@@ -64,5 +64,70 @@ describe("nexus-decorators", () => {
     );
 
     expect(out.tsTypes).toContain('import type { Abc } from "./abc-fixture"');
+  });
+
+  it("merges fields from inherited classes", () => {
+    class BaseConnection {
+      edges() {}
+
+      @nxs.field.type(() => PageInfo)
+      pageInfo() {
+        return new PageInfo();
+      }
+    }
+
+    @nxs.objectType()
+    class PageInfo {
+      @nxs.field.nonNull.boolean()
+      hasNextPage() {
+        return false;
+      }
+
+      @nxs.field.nonNull.boolean()
+      hasPreviousPage() {
+        return false;
+      }
+
+      @nxs.field.string()
+      startCursor() {}
+
+      @nxs.field.string()
+      endCursor() {}
+    }
+
+    class BaseConnectionEdge {
+      @nxs.field.string()
+      cursor() {}
+    }
+
+    class User {
+      @nxs.field.id()
+      id() {}
+    }
+
+    class UserConnectionEdge extends BaseConnectionEdge {
+      @nxs.field.type(() => User)
+      node() {}
+    }
+
+    @nxs.objectType()
+    class UserConnection extends BaseConnection {
+      @nxs.field.list.type(() => UserConnectionEdge)
+      edges() {
+        return super.edges();
+      }
+    }
+
+    class Query {
+      @nxs.queryField(() => ({ type: UserConnection }))
+      static users() {
+        return new UserConnection();
+      }
+    }
+
+    const out = core.makeSchemaInternal({
+      types: [Query],
+    });
+    expect(printSchema(lexicographicSortSchema(out.schema))).toMatchSnapshot();
   });
 });
