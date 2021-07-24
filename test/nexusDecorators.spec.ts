@@ -1,12 +1,13 @@
 import { printSchema } from "graphql";
-import { makeSchemaInternal } from "nexus/dist/builder";
+import { core } from "nexus";
+import path from "path";
+
 import { nxs } from "../src";
 import * as models from "../example/src/models";
-import { makeSchema } from "nexus";
 
 describe("nexus-decorators", () => {
   it("creates a schema", () => {
-    const out = makeSchemaInternal({
+    const out = core.makeSchemaInternal({
       types: models,
     });
     expect(printSchema(out.schema)).toMatchSnapshot();
@@ -40,9 +41,28 @@ describe("nexus-decorators", () => {
     @nxs.objectType()
     class A {}
 
-    const out = makeSchemaInternal({
+    const out = core.makeSchemaInternal({
       types: [A],
     });
     expect(printSchema(out.schema)).toMatchSnapshot();
+  });
+
+  it("preserves sourceType if defined", async () => {
+    @nxs.objectType({
+      sourceType: {
+        module: path.join(__dirname, "fixtures/abc-fixture.ts"),
+        export: "Abc",
+      },
+    })
+    class A {}
+
+    const out = await core.generateSchema.withArtifacts(
+      {
+        types: [A],
+      },
+      path.join(__dirname, "fixtures/out.ts")
+    );
+
+    expect(out.tsTypes).toContain('import type { Abc } from "./abc-fixture"');
   });
 });

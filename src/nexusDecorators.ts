@@ -221,7 +221,7 @@ function nexusDecoratorBuild(this: MetaClass) {
     }
     const toSpread: Partial<OutConfig> = { ...outputDef.config };
 
-    if (outputDef.inFile) {
+    if (outputDef.inFile && !toSpread.sourceType) {
       toSpread.sourceType = {
         module: outputDef.inFile,
         export: outputDef.className,
