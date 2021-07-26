@@ -1,9 +1,13 @@
-import type { ResultValue, HasGen3, GetGen3 } from "nexus/dist/core";
+import type { HasGen3, GetGen3, GetGen } from "nexus/dist/core";
 
-export type NxsArgs<TypeName extends string, FieldName extends string> =
-  HasGen3<"fieldTypes", TypeName, FieldName> extends true
-    ? GetGen3<"argTypes", TypeName, FieldName, never>
-    : never;
+export type NxsCtx = GetGen<"context">;
+
+export type NxsArgs<
+  TypeName extends string,
+  FieldName extends string
+> = HasGen3<"fieldTypes", TypeName, FieldName> extends true
+  ? GetGen3<"argTypes", TypeName, FieldName, never>
+  : never;
 
 export type NxsQueryArgs<FieldName extends string> = NxsArgs<
   "Query",
@@ -15,8 +19,10 @@ export type NxsMutationArgs<FieldName extends string> = NxsArgs<
   FieldName
 >;
 
-export type NxsResult<TypeName extends string, FieldName extends string> =
-  ResultValue<TypeName, FieldName>;
+export type NxsResult<
+  TypeName extends string,
+  FieldName extends string
+> = GetGen3<"fieldTypes", TypeName, FieldName, never>;
 
 export type NxsQueryResult<FieldName extends string> = NxsResult<
   "Query",
