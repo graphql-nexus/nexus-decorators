@@ -130,4 +130,47 @@ describe("nexus-decorators", () => {
     });
     expect(printSchema(lexicographicSortSchema(out.schema))).toMatchSnapshot();
   });
+
+  it("allows interfaces to implement interfaces", async () => {
+    @nxs.interfaceType({
+      resolveType() {},
+    })
+    abstract class Node {
+      @nxs.field.nonNull.id()
+      id() {
+        return "ID";
+      }
+    }
+
+    @nxs.interfaceType({
+      resolveType() {},
+    })
+    abstract class Something extends Node {
+      @nxs.field.string()
+      get name() {
+        return "Something";
+      }
+    }
+
+    @nxs.objectType()
+    class User extends Something {
+      @nxs.field.string()
+      get email() {
+        return "ok";
+      }
+    }
+
+    @nxs.objectType()
+    class Post extends Something {
+      @nxs.field.string()
+      get title() {
+        return "ok";
+      }
+    }
+
+    const out = core.makeSchemaInternal({
+      types: [User, Post, User],
+    });
+    expect(printSchema(lexicographicSortSchema(out.schema))).toMatchSnapshot();
+  });
 });

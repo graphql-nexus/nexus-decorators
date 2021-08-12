@@ -288,7 +288,7 @@ function gatherRecursiveMeta<O extends MetaClass>(cls: O) {
       fields = fields.concat(currentFields);
     }
     if (Array.isArray(currentInterfaces)) {
-      interfaces = currentInterfaces.concat(currentInterfaces);
+      interfaces = interfaces.concat(currentInterfaces);
     }
     walkingProto = Object.getPrototypeOf(walkingProto);
   }

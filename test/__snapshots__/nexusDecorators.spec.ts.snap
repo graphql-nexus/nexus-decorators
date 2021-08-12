@@ -12,6 +12,34 @@ type Query {
 "
 `;
 
+exports[`nexus-decorators allows interfaces to implement interfaces 1`] = `
+"interface Node {
+  id: ID!
+}
+
+type Post implements Node & Something {
+  id: ID!
+  name: String
+  title: String
+}
+
+type Query {
+  ok: Boolean!
+}
+
+interface Something implements Node {
+  id: ID!
+  name: String
+}
+
+type User implements Node & Something {
+  email: String
+  id: ID!
+  name: String
+}
+"
+`;
+
 exports[`nexus-decorators creates a schema 1`] = `
 "\\"\\"\\"Implements the Node id\\"\\"\\"
 interface Node {
