@@ -27,7 +27,8 @@
     "build": "tsc && tsc --build tsconfig.cjs.json && tsc --build tsconfig.esm.json",
     "watch": "tsc --build tsconfig.cjs.json --watch",
     "dev": "cd example && yarn start",
-    "test": "jest"
+    "test": "jest",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand"
   },
   "license": "MIT",
   "dependencies": {

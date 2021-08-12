@@ -1,4 +1,4 @@
-import { lexicographicSortSchema, printSchema } from "graphql";
+import { graphqlSync, lexicographicSortSchema, printSchema } from "graphql";
 import { core } from "nexus";
 import path from "path";
 
@@ -172,5 +172,43 @@ describe("nexus-decorators", () => {
       types: [User, Post, User],
     });
     expect(printSchema(lexicographicSortSchema(out.schema))).toMatchSnapshot();
+  });
+
+  it('retains the correct "this" for static methods', () => {
+    @nxs.objectType()
+    class Test {
+      @nxs.mutationField(() => ({
+        type: Test,
+      }))
+      static test() {
+        return this._someFn();
+      }
+
+      private static _someFn() {
+        return true;
+      }
+
+      @nxs.field.nonNull.boolean()
+      get bool() {
+        return true;
+      }
+    }
+
+    const out = core.makeSchemaInternal({
+      types: [Test],
+    });
+
+    const result = graphqlSync({
+      schema: out.schema,
+      source: `
+        mutation Test {
+          test {
+            bool
+          }
+        }
+      `,
+    });
+
+    expect(result.data).toEqual({ test: { bool: true } });
   });
 });

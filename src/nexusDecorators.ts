@@ -333,7 +333,7 @@ const rootField =
       arr.push({
         fieldMethod,
         fnName,
-        fnBody,
+        fnBody: fnBody.bind(_class),
         options,
       });
       setOrGet(obj, core.NEXUS_BUILD, nexusDecoratorBuild);
