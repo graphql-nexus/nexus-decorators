@@ -1,4 +1,4 @@
-import { nxs } from "../../..";
+import { nxs, NxsResult } from "../../..";
 
 @nxs.interfaceType({
   description: "Implements the Node id",
@@ -8,7 +8,7 @@ import { nxs } from "../../..";
 })
 export abstract class Node {
   @nxs.field.nonNull.id()
-  get id() {
+  get id(): NxsResult<"Node", "id"> {
     return `${this.constructor.name}:${this._id}`;
   }
 
