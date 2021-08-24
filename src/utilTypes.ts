@@ -25,13 +25,15 @@ export type NxsMutationArgs<
   ? GetGen3<"argTypes", "Mutation", FieldName, never>
   : never;
 
+type MaybePromise<T> = T | PromiseLike<T>;
+
 export type NxsResult<
   TypeName extends Extract<keyof GetGen<"fieldTypes", never>, string>,
   FieldName extends Extract<
     keyof GetGen2<"fieldTypes", TypeName, never>,
     string
   >
-> = GetGen3<"fieldTypes", TypeName, FieldName, never>;
+> = MaybePromise<GetGen3<"fieldTypes", TypeName, FieldName, never>>;
 
 export type NxsQueryResult<
   FieldName extends Extract<keyof GetGen2<"fieldTypes", "Query", never>, string>
