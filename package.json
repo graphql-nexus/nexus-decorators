@@ -1,6 +1,6 @@
 {
   "name": "nexus-decorators",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": "dist",
   "module": "dist-esm",
   "types": "dist/index.d.ts",
