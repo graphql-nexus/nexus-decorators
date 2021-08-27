@@ -2,6 +2,12 @@ import * as Nexus from "nexus";
 import { core } from "nexus";
 
 import StackUtils from "stack-utils";
+import type {
+  ArgsDefinitionBlock,
+  FieldConfig,
+  OutputFieldChain,
+  TypeNameOrThunk,
+} from "./nexusDecoratorTypes";
 
 const FIELDS = Symbol.for("@nexus-decorators/fields");
 
@@ -73,29 +79,6 @@ type OutputTypeFn = "objectType" | "interfaceType";
 
 type NullWrapping = "nonNull" | "nullable";
 type Wrapping = "list" | NullWrapping;
-
-interface FieldConfig {
-  name?: string;
-  description?: string;
-  args?: ((t: ArgsDefinitionBlock) => void) | core.ArgsRecord;
-}
-
-type TypeNameOrThunk = core.GetGen<"allOutputTypes", string> | (() => any);
-
-interface OutputFieldChain {
-  int(config?: FieldConfig): MethodDecorator | PropertyDecorator;
-  string(config?: FieldConfig): MethodDecorator | PropertyDecorator;
-  float(config?: FieldConfig): MethodDecorator | PropertyDecorator;
-  boolean(config?: FieldConfig): MethodDecorator | PropertyDecorator;
-  id(config?: FieldConfig): MethodDecorator | PropertyDecorator;
-  type(
-    typeName: TypeNameOrThunk,
-    config?: FieldConfig
-  ): MethodDecorator | PropertyDecorator;
-  list: OutputFieldChain;
-  nonNull: Omit<OutputFieldChain, NullWrapping>;
-  nullable: Omit<OutputFieldChain, NullWrapping>;
-}
 
 interface RootFieldMeta {
   options: RootFieldOptions | (() => RootFieldOptions);
@@ -296,18 +279,6 @@ function gatherRecursiveMeta<O extends MetaClass>(cls: O) {
     fields,
     interfaces,
   };
-}
-
-interface ArgsDefinitionBlock {
-  int(name: string, config?: Nexus.core.ScalarArgConfig<any>): void;
-  float(name: string, config?: Nexus.core.ScalarArgConfig<any>): void;
-  string(name: string, config?: Nexus.core.ScalarArgConfig<any>): void;
-  bool(name: string, config?: Nexus.core.ScalarArgConfig<any>): void;
-  id(name: string, config?: Nexus.core.ScalarArgConfig<any>): void;
-  arg(name: string, config: Nexus.core.NexusArgConfig<any>): void;
-  nullable: Omit<ArgsDefinitionBlock, NullWrapping>;
-  nonNull: Omit<ArgsDefinitionBlock, NullWrapping>;
-  list: ArgsDefinitionBlock;
 }
 
 interface RootFieldOptions extends FieldConfig {

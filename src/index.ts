@@ -1,2 +1,4 @@
 export * from "./nexusDecorators";
-export * from "./utilTypes";
+export * from "./externalTypes";
+import * as core from "./nexusDecoratorTypes";
+export { core };
